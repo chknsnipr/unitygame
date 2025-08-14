@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class stage1obstacle : MonoBehaviour
 {
 
@@ -29,6 +29,7 @@ public class stage1obstacle : MonoBehaviour
         if (!isdestroyed && obstaclehealth <= 0)
         {
             isdestroyed = true;
+            SceneManager.LoadScene("mainmenu");
             
             
            
@@ -57,17 +58,20 @@ public class stage1obstacle : MonoBehaviour
     }
     void damagemech()
     {
-        if (isInHitDetector == true && PlayerController.shooting == true)
+        if (spawn.tcount == 2)
         {
-            if (Time.time - lastDamageTime >= damagetester.damageCooldown)
+            if (isInHitDetector == true && PlayerController.shooting == true)
             {
-                obstaclehealth -= PlayerController.gundamage;
-                lastDamageTime = Time.time;
-                Debug.Log("Damage dealt. Enemy health: " + obstaclehealth);
+                if (Time.time - lastDamageTime >= damagetester.damageCooldown)
+                {
+                    obstaclehealth -= PlayerController.gundamage;
+                    lastDamageTime = Time.time;
+                    Debug.Log("Damage dealt. Enemy health: " + obstaclehealth);
 
 
 
 
+                }
             }
         }
     }

@@ -1,12 +1,15 @@
 using Mythmatic.TurretSystem;
 using Unity.VisualScripting;
+
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 
 
 public class PlayerController : MonoBehaviour
 {
+    public static bool pdeath = false;
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 4f;
 
@@ -38,6 +41,14 @@ public class PlayerController : MonoBehaviour
     public TurretController turretcontroller;
 
     public static bool isinenemyzone = false;
+    public float shakeDuration = 0.1f;
+    public float shakeMagnitude = 0.1f;
+    public float shakeInterval = 0.3f;
+    private float shakeTimer = 0f;
+
+    private bool applied1 = false;
+    private bool applied2 = false;
+
 
     private void Awake()
     {
@@ -55,6 +66,8 @@ public class PlayerController : MonoBehaviour
         }
         isshooting();
         fromturrent();
+        damagemodifier();
+        playerdeath();
 
 
 
@@ -73,7 +86,7 @@ public class PlayerController : MonoBehaviour
                 if (stamina > 0.1000000f)
                 {
                     sprint = 2;
-                    stamina -= .8f;
+                    stamina -= .5f;
                 }
                 else
                 {
@@ -140,9 +153,18 @@ public class PlayerController : MonoBehaviour
 
     public void isshooting()
     {
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetMouseButton(0))
         {
             shooting = true;
+
+            shakeTimer -= Time.deltaTime;
+
+            if (shakeTimer <= 0f)
+            {
+                StartCoroutine(ScreenShake());
+                shakeTimer = shakeInterval;
+            }
+
         }
         else
         {
@@ -156,7 +178,7 @@ public class PlayerController : MonoBehaviour
             isinenemyzone = true;
 
         }
-        
+
     }
     private void OnTriggerExit(Collider other)
     {
@@ -171,6 +193,51 @@ public class PlayerController : MonoBehaviour
         if (turrentcontroller != null && turrentcontroller.turrenthit)
         {
             playerhealth -= 10;
+        }
+    }
+    private System.Collections.IEnumerator ScreenShake()
+    {
+        Vector3 originalPos = cameraTransform.transform.localPosition;
+        float elapsed = 0.0f;
+
+        while (elapsed < shakeDuration)
+        {
+            float x = Random.Range(-1f, 1f) * shakeMagnitude;
+            float y = Random.Range(-1f, 1f) * shakeMagnitude;
+
+            cameraTransform.transform.localPosition = originalPos + new Vector3(x, y, 0f);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        cameraTransform.transform.localPosition = originalPos;
+    }
+    void damagemodifier()
+    {
+        if (!applied1 && spawn.levelup1 == true)
+        {
+            gundamage -= gundamage / 4;
+            applied1 = true;
+
+
+        }
+        if (!applied2 && spawn.levelup2 == true)
+        {
+            gundamage -= gundamage / 4;
+            applied2 = true;
+        }
+    }
+    void playerdeath()
+    {
+        if (playerhealth <= 0 && !pdeath)
+
+        {
+            SceneManager.LoadScene("mainmenu");
+            pdeath = true;
+
+
         }
     }
     

@@ -7,6 +7,7 @@ TagManager:
   - player
   - hitdetector
   - attackzone
+  - interactdetector
   layers:
   - Default
   - TransparentFX

@@ -6,9 +6,9 @@ public class damagetester : MonoBehaviour
 {
 
 
-    public int enemyhealth = 100;
+    public int enemyhealth = 300;
     public static float damageCooldown = 0.5f; // time between each damage hit in seconds
-    private float lastDamageTime = -999f;
+    private float lastDamageTime = -300f;
     public bool isInHitDetector = false;
     public bool isdead = false;
 
@@ -108,8 +108,8 @@ public class damagetester : MonoBehaviour
     }
     void death()
     {
-        Destroy(gameObject, 4f);
-        Debug.Log(isdead);
+        Destroy(gameObject, 2f);
+       
 
 
 
